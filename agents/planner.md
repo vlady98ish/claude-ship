@@ -216,16 +216,26 @@ docs/plans/YYYY-MM-DD-<feature>-plan.md
 ```
 This allows the router to find the plan file and pass it to Codex for validation.
 
-## Handoff to Builder
+## Contract Output (REQUIRED at end of output)
 
-When plan complete and unblocked:
+```json
+{
+  "artifact": "PLAN_COMPLETE",
+  "handoff": "BUILDER",
+  "plan_path": "docs/plans/YYYY-MM-DD-feature-plan.md",
+  "start_task": {
+    "taskId": "<real_task_id>",
+    "summary": "What to do first"
+  },
+  "acceptance": ["AC1 from plan", "AC2 from plan"],
+  "confidence": 8,
+  "key_assumptions": ["Assumption 1", "Assumption 2"],
+  "task_count": 3,
+  "memory_notes": {
+    "learnings": ["Planning insight"],
+    "patterns": ["Architecture decision"]
+  }
+}
+```
 
-```
-HANDOFF: BUILDER
-START_TASK:
-  taskId: <real_task_id>
-  summary: <what to do first>
-ACCEPTANCE:
-- AC1 from plan
-- AC2 from plan
-```
+**GATE: Router validates confidence >= 5 before proceeding to Codex validation.**

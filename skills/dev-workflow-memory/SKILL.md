@@ -232,6 +232,74 @@ Include in output:
 
 Router will persist these notes via the Memory Update task.
 
+## Memory Hygiene
+
+### Size Limits
+| File | Warning | Action |
+|------|---------|--------|
+| Any file > 50KB | Router warns | Run compaction |
+| Any file > 100KB | Blocks workflow | MUST compact before continuing |
+
+### Compaction Protocol
+
+When a memory file is too large:
+
+**1) Identify stale content:**
+- `## Recent Changes` — keep last 10 entries, archive older
+- `## Completed` — keep last 20 items, archive older
+- `## Verification` — keep last 10 entries, archive older
+- `## Learnings` — deduplicate, merge similar entries
+
+**2) Archive to dated file:**
+```
+Bash(command="mkdir -p .claude/memory/archive")
+# Move old content to archive
+Write(file_path=".claude/memory/archive/YYYY-MM-DD-compacted.md", content="...")
+```
+
+**3) Compact the main file:**
+```
+Read(file_path=".claude/memory/activeContext.md")
+# Edit to remove archived content
+Edit(file_path=".claude/memory/activeContext.md", old_string="...", new_string="...")
+Read(file_path=".claude/memory/activeContext.md")  # Verify
+```
+
+### Scoped Loading
+
+For large projects, load memory selectively based on work type:
+
+| Work Type | Load Fully | Skim Only |
+|-----------|-----------|-----------|
+| UI work | activeContext, patterns | progress (just ## Tasks) |
+| Debug | patterns (gotchas), activeContext | progress |
+| Plan | all three (full context needed) | — |
+| Review | patterns, activeContext | progress |
+
+**Skim = read first 50 lines** to get section headers, then read specific sections.
+
+### Deduplication
+
+Before adding to memory, check if similar entry exists:
+```
+Grep(pattern="keyword from new entry", path=".claude/memory/patterns.md")
+# If found → Edit existing entry instead of adding new one
+# If not found → Add new entry
+```
+
+## Run Ledger
+
+The file `.claude/memory/runs.jsonl` tracks workflow executions.
+
+**Template (create if missing):**
+```
+# Empty file - router appends JSONL entries after each workflow
+```
+
+Router appends one JSON line per completed workflow. Used by:
+- `/dev-workflow-status` — show recent runs
+- `/dev-workflow-doctor` — detect repeated failures
+
 ## Red Flags - STOP IMMEDIATELY
 
 If you catch yourself:

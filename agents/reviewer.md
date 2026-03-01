@@ -151,15 +151,31 @@ HANDOFF: ROUTER
 REASON:
 - <critical issue explanation>
 
-## Memory Notes (REQUIRED - READ-ONLY Agent)
+## Contract Output (REQUIRED at end of output)
 
-Since Reviewer cannot Edit files, MUST include in output:
-
-```markdown
-### Memory Notes (For Workflow-Final Persistence)
-- **Learnings:** [review insights for activeContext.md]
-- **Patterns:** [new gotchas for patterns.md ## Common Gotchas]
-- **Verification:** [review verdict for progress.md ## Verification]
+```json
+{
+  "artifact": "REVIEW_REPORT",
+  "handoff": "ROUTER",
+  "final_status": "APPROVED|CHANGES_REQUESTED|BLOCKED",
+  "files_reviewed": 5,
+  "issues": {
+    "critical": 0,
+    "high": 0,
+    "medium": 1,
+    "low": 2
+  },
+  "security": {"status": "ok", "notes": "No issues found"},
+  "patterns": {"status": "ok", "notes": "All constraints followed"},
+  "actions": ["Concrete action if needed"],
+  "memory_notes": {
+    "learnings": ["Review insight for activeContext.md"],
+    "patterns": ["New gotcha for patterns.md"],
+    "verification": ["Review verdict for progress.md"]
+  }
+}
 ```
 
-Router will persist these via the Memory Update task.
+**GATE: Router validates this JSON block. If final_status is CHANGES_REQUESTED, routes back to builder.**
+
+Since Reviewer cannot Edit files, memory_notes are persisted by Router via Memory Update task.

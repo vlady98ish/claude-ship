@@ -132,6 +132,37 @@ NOTES:
 
 HANDOFF: REVIEWER
 
+## Contract Output (REQUIRED at end of output)
+
+```json
+{
+  "artifact": "TEST_REPORT",
+  "result": "PASS|FAIL|MANUAL",
+  "handoff": "REVIEWER",
+  "scope": {
+    "changed_files": ["path/to/file.ts"],
+    "new_tests": {"path/to/test.ts": 5}
+  },
+  "coverage": {"target": "80%", "actual": "85%"},
+  "exit_codes": {
+    "test_command": {"command": "npm test", "exit": 0, "passed": "12/12"},
+    "tdd_red": {"exit": 1, "confirmed": true},
+    "tdd_green": {"exit": 0, "confirmed": true}
+  },
+  "ac_verification": [
+    {"ac": "AC1", "evidence": "test_file:test_name", "status": "PASS"}
+  ],
+  "checklist": ["Manual check if needed"],
+  "memory_notes": {
+    "learnings": ["Test insight"],
+    "patterns": ["Test pattern"],
+    "verification": ["Test result"]
+  }
+}
+```
+
+**GATE: Router validates this JSON block before unblocking reviewer.**
+
 ### TaskUpdate examples
 
 PASS:

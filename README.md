@@ -1,36 +1,59 @@
 # dev-workflow
 
-Generic agent orchestration plugin for Claude Code. Structured workflow with designer, builder, tester, reviewer, and planner agents — all driven by a single project config file.
+Generic agent orchestration plugin for Claude Code. Structured workflows with 7 specialized agents, config-driven everything, run observability, and DX commands.
 
-## What It Does
+## Agents
 
-- **Router** — Detects intent (build/debug/review/plan), evaluates skip conditions, orchestrates agent chain
-- **Designer** — Generates UI code via Gemini MCP, hands off to builder for integration (graceful fallback if no Gemini)
-- **Builder** — Implements features with TDD evidence and handoff protocols
-- **Tester** — Runs tests, verifies acceptance criteria, produces exit code evidence
-- **Reviewer** — Security and pattern validation with confidence scoring
-- **Planner** — Creates specs with task breakdowns, validated by Codex dry-run
-- **Memory** — Persistent context across sessions (activeContext, patterns, progress)
+| Agent | Role | Model |
+|-------|------|-------|
+| **Designer** | UI code generation via Gemini MCP | sonnet |
+| **Builder** | Implementation with TDD evidence | sonnet |
+| **Tester** | Test execution with exit code evidence | sonnet |
+| **Reviewer** | Security/pattern validation, confidence scoring | opus |
+| **Planner** | Specs + task breakdown, Codex validation | opus |
+| **Debugger** | Root cause analysis before fixes | opus |
+| **Migrator** | DB migrations with rollback safety | opus |
+
+## Workflows
+
+| Trigger | Chain |
+|---------|-------|
+| build (UI) | designer → builder → tester → reviewer → memory |
+| build (non-UI) | builder → tester → reviewer → memory |
+| debug, fix, error | debugger → builder → tester → reviewer → memory |
+| migrate, schema | migrator → [builder] → tester → reviewer → memory |
+| review, audit | reviewer → memory |
+| plan, design | planner → codex-validate → memory |
+| /dev-workflow-hotfix | debugger → builder → targeted-tester → memory |
+
+## Skills (Commands)
+
+| Command | Purpose |
+|---------|---------|
+| `/dev-workflow-router` | Main entry point — auto-detects intent |
+| `/dev-workflow-plan` | Manual plan + Codex validation |
+| `/dev-workflow-hotfix` | Fast-path for production incidents |
+| `/dev-workflow-status` | Show workflow state + run history |
+| `/dev-workflow-doctor` | Diagnose plugin health |
+| `/dev-workflow-pr` | Generate PR from workflow artifacts |
 
 ## Quick Start
 
-### 1. Install the Plugin
+### 1. Install
 
 ```bash
 git clone https://github.com/yourusername/claude-dev-workflow.git
 ```
 
-### 2. Create Project Config
-
-Create `.claude/project.json` in your project root:
+### 2. Create `.claude/project.json`
 
 ```json
 {
   "version": "1.0",
   "project": {
     "name": "my-app",
-    "description": "My awesome project",
-    "tech_stack": ["next.js", "typescript", "postgres"]
+    "description": "My project",
+    "tech_stack": ["typescript", "next.js"]
   },
   "agents": {
     "tester": { "test_command": "npm test" },
@@ -42,110 +65,69 @@ Create `.claude/project.json` in your project root:
   },
   "skills": {
     "project_patterns": ".claude/skills/project-patterns/SKILL.md",
-    "auto_load": {
-      "ui": ["ui-ux-pro-max"],
-      "backend": []
-    },
+    "auto_load": { "ui": ["ui-ux-pro-max"], "backend": [] },
     "work_type_detection": {
-      "ui": { "paths": ["components/", "pages/"], "extensions": [".tsx"] },
-      "backend": { "paths": ["api/", "server/"], "extensions": [".ts"] }
+      "ui": { "paths": ["components/"], "extensions": [".tsx"] },
+      "backend": { "paths": ["api/"], "extensions": [".ts"] }
     }
   },
-  "constraints": [
-    "Components < 300 lines",
-    "Use shadcn/ui components only"
-  ],
+  "constraints": ["Components < 300 lines"],
   "integrations": {}
 }
 ```
 
-### 3. (Optional) Add Project Patterns
+### 3. Add to CLAUDE.md
 
-Create `.claude/skills/project-patterns/SKILL.md` with your project's conventions. See `templates/project-patterns/SKILL.md` for a starter.
-
-### 4. Add Router Activation to CLAUDE.md
-
-```markdown
+```
 **For ANY development task → invoke `dev-workflow-router` skill FIRST. Never bypass.**
-Memory: `.claude/memory/activeContext.md` (read on session start)
-Config: `.claude/project.json` (project-specific rules)
+Memory: `.claude/memory/activeContext.md`
+Config: `.claude/project.json`
 ```
 
-## How It Works
+## Key Features
 
-### Agent Chains
-
-| Trigger | Chain |
-|---------|-------|
-| build (UI) | designer → builder → tester → reviewer → memory |
-| build (non-UI) | builder → tester → reviewer → memory |
-| error, bug, fix | builder → tester → reviewer → memory |
-| review, audit | reviewer → memory |
-| plan, design | planner → codex-validate → memory |
+### JSON Agent Contracts
+Every agent outputs a structured JSON block. Router validates required fields before unblocking the next agent. No more fragile text parsing.
 
 ### Skip Conditions
+Agents can be skipped via config. When skipped, router produces a `SKIP_REPORT` that replaces the agent's artifact.
 
-Agents can be skipped via `config.agents.skip_conditions`:
-- `docs-only` — all changes are documentation files
-- `config-only` — all changes are config files (no logic)
-- `user-says-skip` — user explicitly says "skip tests" or "quick fix"
+### Run Observability
+Every workflow logs to `.claude/memory/runs.jsonl`: workflow type, agents run, result, issues found. View with `/dev-workflow-status`.
 
-When skipped, router produces a `SKIP_REPORT` that replaces the agent's artifact for downstream validation.
+### Memory Hygiene
+Auto-warns when memory files exceed 50KB. Compaction protocol archives old entries. Scoped loading for large projects.
 
-### Quality Gates
+### Config Validation
+Router validates `project.json` on load. Missing fields get defaults. Invalid config gets clear error messages. Run `/dev-workflow-doctor` for full health check.
 
-| Agent | Must Produce | Skippable? |
-|-------|-------------|------------|
-| Designer | `HANDOFF: BUILDER` + generated code | Yes (no Gemini MCP) |
-| Builder | `HANDOFF: TESTER` + changes list | No |
-| Tester | `TEST_REPORT: PASS/FAIL/MANUAL` | Yes (via config) |
-| Reviewer | `FINAL_STATUS: APPROVED/CHANGES_REQUESTED` | Yes (via config) |
-| Planner | Specification + Tasks + Confidence | No |
-
-### Designer Agent (Gemini MCP)
-
-For UI tasks, the designer agent:
-1. Generates component code via Gemini MCP
-2. Validates against project constraints
-3. Hands off to builder for integration with codebase
-
-**Fallback:** If Gemini MCP is unavailable, router skips designer and builder handles everything.
-
-### Memory System
-
-Three files in `.claude/memory/` persist across sessions:
-
-| File | Purpose |
-|------|---------|
-| `activeContext.md` | Current focus, decisions, learnings |
-| `patterns.md` | Architecture patterns, gotchas |
-| `progress.md` | Task tracking, verification evidence |
-
-Auto-created on first run.
+### Hotfix Fast-Path
+`/dev-workflow-hotfix` — shortened chain (no reviewer), mandatory rollback plan, auto-generated postmortem template.
 
 ## Project Structure
 
 ```
 claude-dev-workflow/
-├── .claude-plugin/
-│   └── plugin.json              # Plugin manifest
+├── .claude-plugin/plugin.json
 ├── agents/
-│   ├── designer.md              # UI generation (Gemini MCP)
-│   ├── builder.md               # Implementation specialist
-│   ├── tester.md                # Quality assurance
-│   ├── reviewer.md              # Security & pattern validation
-│   └── planner.md               # Architecture & planning
+│   ├── builder.md          # Implementation
+│   ├── debugger.md         # Root cause analysis
+│   ├── designer.md         # UI generation (Gemini MCP)
+│   ├── migrator.md         # DB migrations
+│   ├── planner.md          # Architecture
+│   ├── reviewer.md         # Security & patterns
+│   └── tester.md           # Quality assurance
 ├── skills/
-│   ├── dev-workflow-router/
-│   │   └── SKILL.md             # Entry point & orchestration
-│   ├── dev-workflow-memory/
-│   │   └── SKILL.md             # Memory management patterns
-│   └── dev-workflow-plan/
-│       └── SKILL.md             # Manual plan + codex validation
+│   ├── dev-workflow-router/    # Entry point
+│   ├── dev-workflow-memory/    # Memory management
+│   ├── dev-workflow-plan/      # Manual plan + Codex
+│   ├── dev-workflow-hotfix/    # Production fast-path
+│   ├── dev-workflow-status/    # Workflow status
+│   ├── dev-workflow-doctor/    # Health diagnostics
+│   └── dev-workflow-pr/        # PR automation
 ├── templates/
-│   ├── project.json             # Example project config
-│   └── project-patterns/
-│       └── SKILL.md             # Example project patterns
-├── CLAUDE.md                    # Router activation (3 lines)
-└── README.md                    # This file
+│   ├── project.json
+│   └── project-patterns/SKILL.md
+├── CLAUDE.md
+└── README.md
 ```

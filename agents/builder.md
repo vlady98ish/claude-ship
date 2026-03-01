@@ -120,6 +120,36 @@ If writing tests as part of implementation:
 
 **GATE: If exit codes are missing, task is NOT complete.**
 
+## Contract Output (REQUIRED at end of output)
+
+```json
+{
+  "artifact": "BUILDER_COMPLETE",
+  "handoff": "TESTER",
+  "changes": [
+    {"file": "path/to/file.ts", "summary": "What changed"}
+  ],
+  "acceptance": ["AC1: criterion", "AC2: criterion"],
+  "tdd": {
+    "red_exit": 1,
+    "green_exit": 0,
+    "tests_passed": "X/X"
+  },
+  "rollback": {
+    "command": "git revert HEAD or specific steps",
+    "blast_radius": "What this change affects"
+  },
+  "notes": ["Implementation notes"],
+  "memory_notes": {
+    "learnings": ["Insight for activeContext.md"],
+    "patterns": ["Gotcha for patterns.md"],
+    "verification": ["Result for progress.md"]
+  }
+}
+```
+
+**GATE: Router validates this JSON block before unblocking tester.**
+
 ## Error Handling
 
 If blocked:
@@ -127,14 +157,3 @@ If blocked:
 2. Check task dependencies via TaskList
 3. Ask user for clarification
 4. Do NOT guess or assume
-
-## Memory Notes (For READ-ONLY situations)
-
-If you cannot update memory directly, include in output:
-
-```markdown
-### Memory Notes (For Workflow-Final Persistence)
-- **Learnings:** [insights for activeContext.md]
-- **Patterns:** [gotchas for patterns.md]
-- **Verification:** [results for progress.md]
-```
