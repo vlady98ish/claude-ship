@@ -263,6 +263,9 @@ Agent(
 ## Tech Stack
 {config.project.tech_stack joined by comma}
 
+## Design Spec (if available)
+{design spec from docs/designs/ or activeContext.md References, if exists}
+
 ## Previous Agent Output
 {contract JSON from previous agent, if any}
 

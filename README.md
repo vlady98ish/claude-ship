@@ -35,6 +35,7 @@ Generic agent orchestration plugin for Claude Code. Structured workflows with 7 
 | `/dev-workflow-hotfix` | Fast-path for production incidents |
 | `/dev-workflow-status` | Show workflow state + run history |
 | `/dev-workflow-doctor` | Diagnose plugin health |
+| `/dev-workflow-design` | Iterate on UI designs before building |
 | `/dev-workflow-pr` | Generate PR from workflow artifacts |
 
 ## Quick Start
@@ -118,6 +119,7 @@ claude-dev-workflow/
 │   ├── reviewer.md         # Security & patterns
 │   └── tester.md           # Quality assurance
 ├── skills/
+│   ├── dev-workflow-design/     # UI design iteration
 │   ├── dev-workflow-router/    # Entry point
 │   ├── dev-workflow-memory/    # Memory management
 │   ├── dev-workflow-plan/      # Manual plan + Codex
