@@ -9,6 +9,10 @@
     "tester": {
       "test_command": "npm test"
     },
+    "retry_limits": {
+      "tester_fail": 3,
+      "reviewer_changes": 2
+    },
     "skip_conditions": {
       "tester": ["docs-only", "config-only", "user-says-skip"],
       "reviewer": ["docs-only", "config-only", "user-says-skip"],

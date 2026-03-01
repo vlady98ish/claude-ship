@@ -6,6 +6,7 @@ model: opus
 color: blue
 tools: Read, Grep, Glob, TaskGet, TaskList, TaskUpdate
 disallowedTools: Edit, Write
+permissionMode: bypassPermissions
 skills: dev-workflow:memory
 ---
 

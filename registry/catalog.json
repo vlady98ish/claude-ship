@@ -1,0 +1,291 @@
+{
+  "version": "2.0",
+  "description": "Skill catalog for dev-workflow. Maps tech stacks to recommended skills from skills.sh marketplace + bundled fallbacks.",
+
+  "install_methods": {
+    "primary": "npx skills add <package>",
+    "search": "npx skills find <query>",
+    "fallback": "Copy from registry/skills/ (bundled offline)"
+  },
+
+  "skills": {
+    "vercel-react-native": {
+      "name": "React Native & Expo (Vercel)",
+      "description": "Performance, lists, animations, native modules, Expo config",
+      "marketplace": "vercel-labs/agent-skills@vercel-react-native-skills",
+      "installs": "44K",
+      "fallback": "registry/skills/vercel-react-native-skills/",
+      "category": "ui",
+      "tags": ["react-native", "expo", "mobile", "ios", "android"]
+    },
+    "callstack-react-native": {
+      "name": "React Native Best Practices (Callstack)",
+      "description": "Architecture, patterns, and best practices from React Native core contributors",
+      "marketplace": "callstackincubator/agent-skills@react-native-best-practices",
+      "installs": "6.6K",
+      "category": "ui",
+      "tags": ["react-native", "architecture", "patterns"]
+    },
+    "expo-native-ui": {
+      "name": "Expo Native UI",
+      "description": "Building native UI components with Expo",
+      "marketplace": "expo/skills@building-native-ui",
+      "installs": "14.2K",
+      "category": "ui",
+      "tags": ["expo", "native", "ui", "components"]
+    },
+    "expo-data-fetching": {
+      "name": "Expo Data Fetching",
+      "description": "Native data fetching patterns for Expo apps",
+      "marketplace": "expo/skills@native-data-fetching",
+      "installs": "9.2K",
+      "category": "backend",
+      "tags": ["expo", "data", "fetching", "api"]
+    },
+    "expo-deployment": {
+      "name": "Expo Deployment",
+      "description": "EAS Build, EAS Update, and deployment best practices",
+      "marketplace": "expo/skills@expo-deployment",
+      "installs": "7.9K",
+      "category": "devops",
+      "tags": ["expo", "eas", "deployment", "build"]
+    },
+    "expo-tailwind": {
+      "name": "Expo Tailwind Setup",
+      "description": "NativeWind / Tailwind CSS setup for Expo",
+      "marketplace": "expo/skills@expo-tailwind-setup",
+      "installs": "7.7K",
+      "category": "ui",
+      "tags": ["expo", "tailwind", "nativewind", "css"]
+    },
+    "ui-ux-pro-max": {
+      "name": "UI/UX Design Intelligence",
+      "description": "50+ styles, palettes, font pairings, accessibility, responsive design",
+      "marketplace": null,
+      "fallback": "registry/skills/ui-ux-pro-max/",
+      "category": "ui",
+      "tags": ["ui", "ux", "design", "css", "tailwind", "shadcn", "nativewind"]
+    },
+    "frontend-design": {
+      "name": "Frontend Design (Anthropic)",
+      "description": "Official Anthropic frontend design skill",
+      "marketplace": "anthropics/skills@frontend-design",
+      "installs": "110.7K",
+      "category": "ui",
+      "tags": ["frontend", "design", "html", "css", "react"]
+    },
+    "web-design-guidelines": {
+      "name": "Web Design Guidelines (Vercel)",
+      "description": "Comprehensive web design best practices",
+      "marketplace": "vercel-labs/agent-skills@web-design-guidelines",
+      "installs": "137.5K",
+      "category": "ui",
+      "tags": ["web", "design", "guidelines", "responsive"]
+    },
+    "vercel-react": {
+      "name": "React Best Practices (Vercel)",
+      "description": "React patterns and performance from Vercel",
+      "marketplace": "vercel-labs/agent-skills@vercel-react-best-practices",
+      "installs": "178.9K",
+      "category": "ui",
+      "tags": ["react", "patterns", "performance", "hooks"]
+    },
+    "supabase-postgres": {
+      "name": "Supabase & Postgres",
+      "description": "Query optimization, RLS, schema design, connection pooling",
+      "marketplace": "supabase/agent-skills@supabase-postgres-best-practices",
+      "installs": "26.1K",
+      "fallback": "registry/skills/supabase-postgres-best-practices/",
+      "category": "backend",
+      "tags": ["supabase", "postgres", "sql", "database", "rls"]
+    },
+    "nextjs-supabase-auth": {
+      "name": "Next.js + Supabase Auth",
+      "description": "Authentication patterns for Next.js with Supabase",
+      "marketplace": "sickn33/antigravity-awesome-skills@nextjs-supabase-auth",
+      "installs": "2.7K",
+      "category": "backend",
+      "tags": ["nextjs", "supabase", "auth", "authentication"]
+    },
+    "nextjs-app-router": {
+      "name": "Next.js App Router Patterns",
+      "description": "App Router architecture, RSC, layouts, and data fetching",
+      "marketplace": "wshobson/agents@nextjs-app-router-patterns",
+      "installs": "6.1K",
+      "category": "ui",
+      "tags": ["nextjs", "app-router", "rsc", "server-components"]
+    },
+    "tailwind-design-system": {
+      "name": "Tailwind Design System",
+      "description": "Design system patterns with Tailwind CSS",
+      "marketplace": "wshobson/agents@tailwind-design-system",
+      "installs": "12.6K",
+      "category": "ui",
+      "tags": ["tailwind", "design-system", "css", "tokens"]
+    },
+    "webapp-testing": {
+      "name": "Web App Testing (Anthropic)",
+      "description": "Official Anthropic testing skill for web applications",
+      "marketplace": "anthropics/skills@webapp-testing",
+      "installs": "16.4K",
+      "category": "testing",
+      "tags": ["testing", "jest", "playwright", "e2e", "unit"]
+    },
+    "python-testing": {
+      "name": "Python Testing Patterns",
+      "description": "pytest, mocking, fixtures, and test architecture",
+      "marketplace": "wshobson/agents@python-testing-patterns",
+      "installs": "5.4K",
+      "category": "testing",
+      "tags": ["python", "pytest", "testing", "mocking"]
+    },
+    "clerk-nextjs": {
+      "name": "Clerk + Next.js Patterns",
+      "description": "Authentication with Clerk in Next.js apps",
+      "marketplace": "clerk/skills@clerk-nextjs-patterns",
+      "installs": "2.1K",
+      "category": "backend",
+      "tags": ["clerk", "auth", "nextjs"]
+    }
+  },
+
+  "stack_presets": {
+    "react-native": {
+      "detect": {
+        "files": ["app.json", "app.config.js", "app.config.ts"],
+        "package_deps": ["react-native", "expo"],
+        "any_match": true
+      },
+      "recommended_skills": [
+        "vercel-react-native",
+        "ui-ux-pro-max",
+        "expo-native-ui",
+        "expo-deployment"
+      ],
+      "optional_skills": [
+        "callstack-react-native",
+        "expo-data-fetching",
+        "expo-tailwind"
+      ],
+      "default_config": {
+        "test_command": "npm test",
+        "work_type_detection": {
+          "ui": {
+            "paths": ["screens/", "components/", "app/"],
+            "extensions": [".tsx", ".jsx"]
+          },
+          "backend": {
+            "paths": ["services/", "api/", "db/", "server/"],
+            "extensions": [".ts", ".js", ".sql"]
+          },
+          "domain": { "paths": ["domain/", "lib/", "utils/", "hooks/"] }
+        }
+      }
+    },
+    "nextjs": {
+      "detect": {
+        "files": ["next.config.js", "next.config.mjs", "next.config.ts"],
+        "package_deps": ["next"],
+        "any_match": true
+      },
+      "recommended_skills": [
+        "vercel-react",
+        "web-design-guidelines",
+        "nextjs-app-router",
+        "webapp-testing"
+      ],
+      "optional_skills": ["tailwind-design-system", "frontend-design"],
+      "default_config": {
+        "test_command": "npm test",
+        "work_type_detection": {
+          "ui": {
+            "paths": ["app/", "pages/", "components/", "src/components/"],
+            "extensions": [".tsx", ".jsx"]
+          },
+          "backend": {
+            "paths": ["api/", "app/api/", "lib/", "server/"],
+            "extensions": [".ts", ".js"]
+          },
+          "domain": { "paths": ["lib/", "utils/", "helpers/"] }
+        }
+      }
+    },
+    "vue": {
+      "detect": {
+        "files": [
+          "nuxt.config.ts",
+          "nuxt.config.js",
+          "vue.config.js",
+          "vite.config.ts"
+        ],
+        "package_deps": ["vue", "nuxt"],
+        "any_match": true
+      },
+      "recommended_skills": ["web-design-guidelines", "webapp-testing"],
+      "optional_skills": ["tailwind-design-system", "frontend-design"],
+      "default_config": {
+        "test_command": "npm test",
+        "work_type_detection": {
+          "ui": {
+            "paths": ["components/", "pages/", "layouts/", "src/components/"],
+            "extensions": [".vue", ".tsx"]
+          },
+          "backend": {
+            "paths": ["server/", "api/", "composables/"],
+            "extensions": [".ts", ".js"]
+          },
+          "domain": { "paths": ["utils/", "lib/", "helpers/"] }
+        }
+      }
+    },
+    "python": {
+      "detect": {
+        "files": ["requirements.txt", "pyproject.toml", "setup.py", "Pipfile"],
+        "package_deps": ["fastapi", "flask", "django"],
+        "any_match": true
+      },
+      "recommended_skills": ["python-testing"],
+      "optional_skills": [],
+      "default_config": {
+        "test_command": "pytest",
+        "work_type_detection": {
+          "backend": {
+            "paths": ["app/", "src/", "api/", "routes/"],
+            "extensions": [".py"]
+          },
+          "domain": {
+            "paths": ["models/", "schemas/", "utils/", "lib/", "core/"]
+          }
+        }
+      }
+    },
+    "go": {
+      "detect": {
+        "files": ["go.mod"],
+        "any_match": true
+      },
+      "recommended_skills": [],
+      "optional_skills": [],
+      "default_config": {
+        "test_command": "go test ./...",
+        "work_type_detection": {
+          "backend": {
+            "paths": ["cmd/", "internal/", "pkg/", "api/"],
+            "extensions": [".go"]
+          },
+          "domain": { "paths": ["internal/domain/", "pkg/", "lib/"] }
+        }
+      }
+    },
+    "supabase": {
+      "detect": {
+        "files": ["supabase/config.toml"],
+        "package_deps": ["@supabase/supabase-js"],
+        "any_match": true
+      },
+      "recommended_skills": ["supabase-postgres"],
+      "optional_skills": ["nextjs-supabase-auth"],
+      "default_config": {}
+    }
+  }
+}

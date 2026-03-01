@@ -5,6 +5,7 @@ context: fork
 model: opus
 color: orange
 tools: Read, Grep, Glob, Edit, Write, Bash, TaskGet, TaskList, TaskUpdate
+permissionMode: bypassPermissions
 skills: dev-workflow:memory
 ---
 

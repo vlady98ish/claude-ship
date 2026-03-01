@@ -1,0 +1,51 @@
+{
+  "name": "dev-workflow",
+  "owner": {
+    "name": "Vladyslav Ishchenko",
+    "email": "vlady98ish@gmail.com"
+  },
+  "metadata": {
+    "description": "Generic agent orchestration plugin for Claude Code. 7 specialized agents, 11 skills, config-driven workflows, memory system, and parallel sprint execution.",
+    "version": "2.0.0",
+    "pluginRoot": "./plugins/dev-workflow"
+  },
+  "plugins": [
+    {
+      "name": "dev-workflow",
+      "source": "./",
+      "description": "Full dev-workflow plugin: 7 agents (builder, tester, reviewer, planner, designer, debugger, migrator), 11 skills (router, init, scan, sprint, plan, design, hotfix, status, doctor, pr, memory), config-driven quality gates, feedback loops, memory system, and run observability.",
+      "version": "2.0.0",
+      "author": {
+        "name": "Vladyslav Ishchenko"
+      },
+      "homepage": "https://github.com/vlady98ish/claude-dev-workflow",
+      "repository": "https://github.com/vlady98ish/claude-dev-workflow",
+      "license": "MIT",
+      "keywords": [
+        "workflow",
+        "orchestration",
+        "agents",
+        "quality-gates",
+        "tdd",
+        "code-review",
+        "memory",
+        "sprint",
+        "parallel-build",
+        "teams"
+      ],
+      "category": "productivity",
+      "tags": [
+        "workflow",
+        "agents",
+        "builder",
+        "tester",
+        "reviewer",
+        "planner",
+        "orchestration",
+        "quality",
+        "sprint",
+        "teams"
+      ]
+    }
+  ]
+}

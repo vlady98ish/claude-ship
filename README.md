@@ -140,6 +140,36 @@ graph LR
 | **Planner** | Specs + task breakdown | `PLAN_COMPLETE` |
 | **Migrator** | DB migrations with up/down + rollback | `MIGRATION_PLAN` |
 
+## Feedback Loops
+
+When tests fail or reviewer requests changes, the router automatically retries the builder with failure context.
+
+```mermaid
+flowchart TD
+    B[Builder] --> T[Tester]
+    T -->|PASS| R[Reviewer]
+    T -->|FAIL| Check1{Retries < 3?}
+    Check1 -->|Yes| B
+    Check1 -->|No| Abort1[ABORT + Log Failure]
+
+    R -->|APPROVED| Mem[Memory Update]
+    R -->|CHANGES_REQUESTED| Check2{Retries < 2?}
+    Check2 -->|Yes| B
+    Check2 -->|No| Abort2[Present Issues to User]
+
+    style B fill:#27ae60,color:#fff
+    style T fill:#f1c40f,color:#000
+    style R fill:#3498db,color:#fff
+    style Abort1 fill:#e74c3c,color:#fff
+    style Abort2 fill:#e74c3c,color:#fff
+```
+
+| Loop | Trigger | Max Retries | Config Key |
+|------|---------|-------------|------------|
+| Tester → Builder | `TEST_REPORT.result == "FAIL"` | 3 | `agents.retry_limits.tester_fail` |
+| Reviewer → Builder | `REVIEW_REPORT.final_status == "CHANGES_REQUESTED"` | 2 | `agents.retry_limits.reviewer_changes` |
+| Codex → Planner | `CODEX_REVIEW: ISSUES_FOUND` | 3 | (built-in) |
+
 ## Workflow Chains
 
 ```mermaid
@@ -178,12 +208,27 @@ graph TD
         R0[Reviewer] --> R1[Memory]
     end
 
+    subgraph "SPRINT (parallel)"
+        S0[Planner] --> S1[TeamCreate]
+        S1 --> S2a[Builder 1<br/><i>worktree A</i>]
+        S1 --> S2b[Builder 2<br/><i>worktree B</i>]
+        S1 --> S2c[Builder 3<br/><i>worktree C</i>]
+        S2a --> S3[Merge]
+        S2b --> S3
+        S2c --> S3
+        S3 --> S4[Tester] --> S5[Reviewer] --> S6[Memory]
+    end
+
     style U0 fill:#e91e8e,color:#fff
     style D0 fill:#e74c3c,color:#fff
     style H0 fill:#e74c3c,color:#fff
     style M0 fill:#e67e22,color:#fff
     style DS0 fill:#e91e8e,color:#fff
     style P1 fill:#8e44ad,color:#fff
+    style S1 fill:#9b59b6,color:#fff
+    style S2a fill:#27ae60,color:#fff
+    style S2b fill:#27ae60,color:#fff
+    style S2c fill:#27ae60,color:#fff
 ```
 
 ## Skills (Commands)
@@ -191,6 +236,10 @@ graph TD
 | Command | Purpose | When to Use |
 |---------|---------|-------------|
 | `/dev-workflow-router` | Auto-detect intent, run full chain | Any dev task |
+| `/dev-workflow-init` | Bootstrap project: detect stack, install skills | New project or re-configure |
+| `/dev-workflow-init search <q>` | Search skills.sh marketplace | Find new skills |
+| `/dev-workflow-scan` | Auto-generate patterns + constraints from codebase | After init or anytime |
+| `/dev-workflow-sprint` | Parallel build with agent teams + worktrees | Multiple features at once |
 | `/dev-workflow-design` | Generate + iterate UI with Gemini | Before building UI |
 | `/dev-workflow-plan` | Plan + Codex validation | Before major features |
 | `/dev-workflow-hotfix` | Fast incident response | Production bugs |
@@ -245,7 +294,7 @@ graph TD
     Config[".claude/project.json"]
 
     Config --> Project["project{}<br/>name, description, tech_stack"]
-    Config --> Agents["agents{}<br/>test_command, skip_conditions"]
+    Config --> Agents["agents{}<br/>test_command, retry_limits,<br/>skip_conditions"]
     Config --> Skills["skills{}<br/>project_patterns, auto_load,<br/>work_type_detection"]
     Config --> Constraints["constraints[]<br/>freeform rules"]
     Config --> Integrations["integrations{}<br/>clickup, linear, etc."]
@@ -253,6 +302,7 @@ graph TD
     Skills --> WTD["work_type_detection{}<br/>ui: paths + extensions<br/>backend: paths + extensions<br/>domain: paths"]
     Skills --> AL["auto_load{}<br/>ui: [skill1, skill2]<br/>backend: [skill3]"]
 
+    Agents --> RL2["retry_limits{}<br/>tester_fail: 3<br/>reviewer_changes: 2"]
     Agents --> SC["skip_conditions{}<br/>tester: [docs-only, ...]<br/>reviewer: [docs-only, ...]"]
 
     style Config fill:#4a90d9,color:#fff
@@ -268,6 +318,7 @@ graph TD
   },
   "agents": {
     "tester": { "test_command": "npm test" },
+    "retry_limits": { "tester_fail": 3, "reviewer_changes": 2 },
     "skip_conditions": {
       "tester": ["docs-only", "config-only", "user-says-skip"],
       "reviewer": ["docs-only", "config-only", "user-says-skip"],
@@ -313,29 +364,104 @@ flowchart TD
 
 ## Quick Start
 
-### 1. Install
+### Option A: Skills CLI (Recommended)
 
 ```bash
-git clone https://github.com/yourusername/claude-dev-workflow.git
+npx skills add vlady98ish/claude-dev-workflow -y
 ```
 
-### 2. Create `.claude/project.json`
+### Option B: Claude Code Marketplace
 
-Copy from `templates/project.json` and customize for your project.
+```
+/plugin marketplace add vlady98ish/claude-dev-workflow
+/plugin install dev-workflow@dev-workflow
+```
 
-### 3. (Optional) Add project patterns
+### Option C: Git Clone
 
-Create `.claude/skills/project-patterns/SKILL.md` with your conventions. See `templates/project-patterns/SKILL.md`.
+```bash
+git clone https://github.com/vlady98ish/claude-dev-workflow.git
+```
 
-### 4. Add to your project's `CLAUDE.md`
-
+Then add to your project's `CLAUDE.md`:
 ```markdown
 **For ANY development task → invoke `dev-workflow-router` skill FIRST. Never bypass.**
-Memory: `.claude/memory/activeContext.md`
-Config: `.claude/project.json`
 ```
 
-### 5. Run `/dev-workflow-doctor` to verify setup
+All methods: start working — the router auto-activates and bootstraps on first use.
+
+### What Happens on First Run
+
+On first run, the router auto-detects your tech stack and bootstraps everything:
+
+```mermaid
+sequenceDiagram
+    participant U as User
+    participant R as Router
+    participant D as Detector
+    participant C as Catalog
+
+    U->>R: "build login page"
+    R->>R: .claude/project.json missing!
+    R->>D: Scan project files
+    D->>D: Found: package.json → react-native, expo
+    D->>D: Found: supabase/config.toml → supabase
+    D->>U: "Detected: React Native + Expo + Supabase. Correct?"
+    U->>R: "Yes"
+    R->>C: Load registry/catalog.json
+    C->>R: Recommended: react-native, ui-ux-pro-max, supabase-postgres
+    R->>R: Generate .claude/project.json
+    R->>R: Copy skills from registry
+    R->>R: Create memory directory
+    R->>U: "Project initialized! Continuing with your task..."
+    R->>R: Execute BUILD workflow normally
+```
+
+Or run `/dev-workflow-init` manually for guided setup.
+
+### Alternative: Manual Setup
+
+If you prefer manual control:
+1. Copy `templates/project.json` to `.claude/project.json`
+2. Add `project-patterns/SKILL.md` with your conventions
+3. Copy skills from `registry/skills/` as needed
+4. Run `/dev-workflow-doctor` to verify
+
+## Skill Registry + skills.sh Marketplace
+
+Skills are installed from [skills.sh](https://skills.sh/) marketplace via `npx skills add`. The catalog maps detected stacks to recommended skills automatically.
+
+### Pre-Configured Skills (auto-recommended per stack)
+
+| Stack | Recommended Skills | Optional |
+|-------|-------------------|----------|
+| **React Native** | vercel-react-native (44K), ui-ux-pro-max, expo-native-ui (14K), expo-deployment (7.9K) | callstack-react-native, expo-data-fetching, expo-tailwind |
+| **Next.js** | vercel-react (179K), web-design-guidelines (138K), nextjs-app-router (6.1K), webapp-testing (16K) | tailwind-design-system, frontend-design |
+| **Vue/Nuxt** | web-design-guidelines (138K), webapp-testing (16K) | tailwind-design-system, frontend-design |
+| **Python** | python-testing (5.4K) | — |
+| **Supabase** | supabase-postgres (26K) | nextjs-supabase-auth |
+
+### Search for More Skills
+
+```bash
+# Via CLI directly
+npx skills find react-native
+npx skills find testing
+npx skills find tailwind
+
+# Via dev-workflow
+/dev-workflow-init search <query>
+```
+
+Browse skills at [skills.sh](https://skills.sh/) | [claudemarketplaces.com](https://claudemarketplaces.com/) | [skillsmp.com](https://skillsmp.com/)
+
+### Adding Custom Skills
+
+**From marketplace:** `npx skills add owner/repo@skill-name`
+
+**Local:** Create `.claude/skills/{name}/SKILL.md` in your project.
+
+**Bundled fallbacks:** `registry/skills/` contains offline copies of key skills (vercel-react-native, ui-ux-pro-max, supabase-postgres) for use without internet.
 
 ## Design → Build Pipeline
 
@@ -407,8 +533,17 @@ claude-dev-workflow/
 │   ├── planner.md                    # Architecture & planning
 │   ├── reviewer.md                   # Security & patterns (read-only)
 │   └── tester.md                     # Quality assurance
+├── registry/
+│   ├── catalog.json                  # Stack detection + skill mapping
+│   └── skills/                       # Pre-built tech skills
+│       ├── vercel-react-native-skills/  # React Native + Expo
+│       ├── ui-ux-pro-max/               # UI/UX design intelligence
+│       └── supabase-postgres-best-practices/  # Supabase + Postgres
 ├── skills/
 │   ├── dev-workflow-router/SKILL.md  # Entry point & orchestration
+│   ├── dev-workflow-init/SKILL.md    # Project bootstrap + auto-detect
+│   ├── dev-workflow-scan/SKILL.md   # Auto-generate patterns from code
+│   ├── dev-workflow-sprint/SKILL.md # Parallel build with agent teams
 │   ├── dev-workflow-memory/SKILL.md  # Memory management + hygiene
 │   ├── dev-workflow-design/SKILL.md  # UI design iteration
 │   ├── dev-workflow-plan/SKILL.md    # Manual plan + Codex

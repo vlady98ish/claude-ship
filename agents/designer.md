@@ -5,6 +5,7 @@ context: fork
 model: sonnet
 color: pink
 tools: Read, Grep, Glob, Write, Bash, TaskGet, TaskList, TaskUpdate
+permissionMode: bypassPermissions
 skills: dev-workflow:memory
 ---
 

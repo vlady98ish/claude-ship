@@ -36,19 +36,34 @@ description: |
 Read(file_path=".claude/project.json")
 ```
 
+**If file missing → trigger auto-bootstrap:**
+```
+If .claude/project.json does NOT exist:
+  1. Read the registry catalog: {PLUGIN_DIR}/registry/catalog.json
+  2. Auto-detect tech stack (scan for package.json, go.mod, requirements.txt, etc.)
+  3. AskUserQuestion to confirm detected stack
+  4. Generate project.json with detected defaults
+  5. Install recommended skills from registry
+  6. Continue with normal workflow
+
+  This is equivalent to running /dev-workflow-init automatically.
+  See dev-workflow-init skill for full bootstrap logic.
+```
+
 **Validate required fields:**
 ```
 REQUIRED: version, project.name, project.tech_stack, agents.tester.test_command
-OPTIONAL: agents.skip_conditions, skills.*, constraints, integrations
+OPTIONAL: agents.skip_conditions, agents.retry_limits, skills.*, constraints, integrations
 ```
 
-If missing field → use default. If file missing → use full defaults:
+If missing field → use default. If file missing after bootstrap → use full defaults:
 ```json
 {
   "version": "1.0",
   "project": { "name": "project", "description": "", "tech_stack": [] },
   "agents": {
     "tester": { "test_command": "npm test" },
+    "retry_limits": { "tester_fail": 3, "reviewer_changes": 2 },
     "skip_conditions": {
       "tester": ["docs-only", "config-only", "user-says-skip"],
       "reviewer": ["docs-only", "config-only", "user-says-skip"],
@@ -103,13 +118,26 @@ If any file > 50KB → emit warning "Consider running /dev-workflow-doctor for m
 ## Step 3: Load Skills
 
 ```
+# 1. Project patterns (always loaded if present)
 if config.skills.project_patterns:
   Read(file_path=config.skills.project_patterns)
 
+# 2. Auto-load based on work type detection
 For each work_type in config.skills.work_type_detection:
   if user_request mentions matching paths/extensions:
     for skill_name in config.skills.auto_load[work_type]:
       Read(file_path=".claude/skills/{skill_name}/SKILL.md")
+
+# 3. Remote skills (if configured)
+if config.skills.remote:
+  for remote in config.skills.remote:
+    # Check if already cached locally
+    if exists(".claude/skills/{remote.name}/SKILL.md"):
+      Read(file_path=".claude/skills/{remote.name}/SKILL.md")
+    else:
+      # Fetch and cache
+      WebFetch(url=remote.url) → save to .claude/skills/{remote.name}/SKILL.md
+      Read(file_path=".claude/skills/{remote.name}/SKILL.md")
 ```
 
 ## Step 4: Evaluate Skip Conditions
@@ -163,6 +191,113 @@ for agent_name, conditions in config.agents.skip_conditions:
 2. Check `artifact` field matches expected type
 3. Check all required fields present
 4. If validation fails → create REMEDIATION task, block downstream
+
+## Feedback Loops (CRITICAL)
+
+**When tester or reviewer report failure, re-invoke builder with feedback. Do NOT proceed to memory-update.**
+
+### Tester FAIL → Builder Retry
+
+```
+if tester_contract.result == "FAIL":
+  iteration += 1
+  if iteration > MAX_RETRIES (default: 3):
+    ABORT workflow → log run with result: "FAIL" → memory-update with failure notes
+    STOP
+
+  # Re-invoke builder with failure context
+  Agent(
+    subagent_type="builder",
+    prompt="
+## RETRY #{iteration} — Tests Failed
+
+## Failed Test Report
+{tester_contract JSON — includes exit_codes, failing tests, ac_verification}
+
+## Original Request
+{original user request}
+
+## Your Previous Changes
+{builder_contract.changes from last attempt}
+
+## Instructions
+Fix the code so tests pass. Focus on the failing tests above.
+Do NOT rewrite everything — make targeted fixes.
+End with your JSON contract block.
+"
+  )
+
+  # After builder retry → re-invoke tester
+  # Loop continues until PASS or MAX_RETRIES
+```
+
+### Reviewer CHANGES_REQUESTED → Builder Retry
+
+```
+if reviewer_contract.final_status == "CHANGES_REQUESTED":
+  iteration += 1
+  if iteration > MAX_RETRIES (default: 2):
+    ABORT workflow → log run with result: "CHANGES_REQUESTED"
+    Present reviewer issues to user for manual resolution
+    STOP
+
+  # Re-invoke builder with review feedback
+  Agent(
+    subagent_type="builder",
+    prompt="
+## RETRY #{iteration} — Reviewer Requested Changes
+
+## Review Issues
+{reviewer_contract.issues — full list with severity}
+
+## Original Request
+{original user request}
+
+## Your Previous Changes
+{builder_contract.changes from last attempt}
+
+## Instructions
+Address each review issue above. Focus on critical/high severity first.
+Do NOT introduce new features — only fix the flagged issues.
+End with your JSON contract block.
+"
+  )
+
+  # After builder retry → re-invoke tester (if not skipped) → re-invoke reviewer
+  # Full chain re-runs from builder onward
+```
+
+### Retry Limits (Configurable)
+
+| Loop | Default Max | Config Key |
+|------|-------------|------------|
+| Tester FAIL → Builder | 3 | `agents.retry_limits.tester_fail` |
+| Reviewer CHANGES → Builder | 2 | `agents.retry_limits.reviewer_changes` |
+| Codex ISSUES → Planner | 3 | (existing) |
+
+### Loop Flow Diagram
+
+```
+builder → tester ──PASS──→ reviewer ──APPROVED──→ memory-update ✓
+              │                         │
+              FAIL                  CHANGES_REQUESTED
+              │                         │
+              ▼                         ▼
+         builder (retry)          builder (retry)
+              │                         │
+              ▼                         ▼
+         tester (re-run)     tester → reviewer (re-run)
+              │                         │
+         ... (max 3)              ... (max 2)
+```
+
+### Abort Behavior
+
+When MAX_RETRIES exceeded:
+1. Log run with `result: "FAIL"` or `result: "CHANGES_REQUESTED"`
+2. Include all iteration details in `remediations` count
+3. Update memory with failure learnings
+4. Present final issues to user with suggestion to fix manually
 
 ## Task-Based Orchestration
 
@@ -326,7 +461,8 @@ Entry format:
   "duration_agents": 4,
   "issues_found": {"critical": 0, "high": 0, "medium": 1, "low": 0},
   "codex_iterations": 0,
-  "remediations": 0
+  "remediations": 0,
+  "retries": { "tester_fail": 0, "reviewer_changes": 0 }
 }
 ```
 
@@ -344,14 +480,16 @@ After memory update, for each integration in `config.integrations`:
 3. Clarify if ambiguous (AskUserQuestion)
 4. Create task hierarchy
 5. Execute chain, validate each contract
-6. Log run → Integration sync → Memory update
+6. **Feedback loop:** If tester FAIL → re-invoke builder (max 3). If reviewer CHANGES_REQUESTED → re-invoke builder → tester → reviewer (max 2).
+7. Log run → Integration sync → Memory update
 
 ### DEBUG
 1. Load config → Load memory → Check patterns.md gotchas
 2. Clarify if ambiguous
 3. Create task hierarchy (debugger → builder → ...)
 4. Execute chain: debugger diagnoses FIRST, then builder fixes
-5. Log run → Memory update → Add to Common Gotchas
+5. **Feedback loop:** Same retry logic as BUILD (tester FAIL / reviewer CHANGES_REQUESTED)
+6. Log run → Memory update → Add to Common Gotchas
 
 ### MIGRATE
 1. Load config → Load memory
