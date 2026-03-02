@@ -79,6 +79,9 @@ Planner writes plan to `docs/plans/YYYY-MM-DD-<feature>-plan.md`.
 iteration = 0
 plan_path = extract from planner output "### Plan Location"
 
+# IMPORTANT: Load the deferred Codex tool before first use
+ToolSearch(query="select:mcp__codex-subagent__spawn_agent")
+
 while iteration < 3:
   # Read plan
   Read(file_path=plan_path)

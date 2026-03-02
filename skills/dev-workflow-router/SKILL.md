@@ -423,7 +423,11 @@ Execute the task. End with your JSON contract block.
 
 1. Extract `plan_path` from planner contract
 2. Read plan content
-3. Spawn Codex:
+3. **Load the deferred Codex tool** (REQUIRED before first call):
+```
+ToolSearch(query="select:mcp__codex-subagent__spawn_agent")
+```
+4. Spawn Codex:
 ```
 mcp__codex-subagent__spawn_agent({
   prompt: "Review this plan for a {tech_stack} project.
@@ -434,9 +438,9 @@ mcp__codex-subagent__spawn_agent({
   OUTPUT: CODEX_REVIEW: APPROVED|ISSUES_FOUND, CONFIDENCE: X/10, ISSUES: (if any)"
 })
 ```
-4. If APPROVED → memory-update
-5. If ISSUES_FOUND → re-invoke planner with `CODEX_FEEDBACK:` (max 3 iterations)
-6. After 3 failures → warn and proceed
+5. If APPROVED → memory-update
+6. If ISSUES_FOUND → re-invoke planner with `CODEX_FEEDBACK:` (max 3 iterations)
+7. After 3 failures → warn and proceed
 
 ## Run Observability
 
