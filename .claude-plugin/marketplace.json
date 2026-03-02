@@ -6,14 +6,14 @@
   },
   "metadata": {
     "description": "Generic agent orchestration plugin for Claude Code. 7 specialized agents, 11 skills, config-driven workflows, memory system, and parallel sprint execution.",
-    "version": "2.0.0"
+    "version": "2.0.1"
   },
   "plugins": [
     {
       "name": "dev-workflow",
       "source": "./",
       "description": "Full dev-workflow plugin: 7 agents (builder, tester, reviewer, planner, designer, debugger, migrator), 11 skills (router, init, scan, sprint, plan, design, hotfix, status, doctor, pr, memory), config-driven quality gates, feedback loops, memory system, and run observability.",
-      "version": "2.0.0",
+      "version": "2.0.1",
       "author": {
         "name": "Vladyslav Ishchenko"
       },
