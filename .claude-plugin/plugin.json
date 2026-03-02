@@ -1,5 +1,23 @@
 {
   "name": "dev-workflow",
-  "description": "Generic agent orchestration plugin for Claude Code — router, builder, tester, reviewer, planner with config-driven workflows",
-  "version": "1.0.0"
+  "version": "2.0.0",
+  "description": "Generic agent orchestration plugin for Claude Code — 7 agents, 11 skills, config-driven workflows, memory system, and parallel sprint execution",
+  "author": {
+    "name": "Vladyslav Ishchenko",
+    "email": "vlady98ish@gmail.com"
+  },
+  "homepage": "https://github.com/vlady98ish/claude-dev-workflow",
+  "repository": "https://github.com/vlady98ish/claude-dev-workflow",
+  "license": "MIT",
+  "keywords": [
+    "workflow",
+    "orchestration",
+    "agents",
+    "quality-gates",
+    "tdd",
+    "code-review",
+    "memory",
+    "sprint",
+    "teams"
+  ]
 }

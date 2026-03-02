@@ -364,35 +364,20 @@ flowchart TD
 
 ## Quick Start
 
-### Option A: Skills CLI (Recommended)
+### Install (one command)
 
-```bash
-npx skills add vlady98ish/claude-dev-workflow -y
-```
-
-### Option B: Claude Code Marketplace
+In Claude Code, run:
 
 ```
 /plugin marketplace add vlady98ish/claude-dev-workflow
 /plugin install dev-workflow@dev-workflow
 ```
 
-### Option C: Git Clone
+This installs **everything**: 11 skills, 7 agents, templates, and the skill registry.
 
-```bash
-git clone https://github.com/vlady98ish/claude-dev-workflow.git
-```
+### First Run
 
-Then add to your project's `CLAUDE.md`:
-```markdown
-**For ANY development task → invoke `dev-workflow-router` skill FIRST. Never bypass.**
-```
-
-All methods: start working — the router auto-activates and bootstraps on first use.
-
-### What Happens on First Run
-
-On first run, the router auto-detects your tech stack and bootstraps everything:
+Just start working. The router auto-detects your stack and bootstraps the project:
 
 ```mermaid
 sequenceDiagram
@@ -409,9 +394,9 @@ sequenceDiagram
     D->>U: "Detected: React Native + Expo + Supabase. Correct?"
     U->>R: "Yes"
     R->>C: Load registry/catalog.json
-    C->>R: Recommended: react-native, ui-ux-pro-max, supabase-postgres
-    R->>R: Generate .claude/project.json
-    R->>R: Copy skills from registry
+    C->>R: Recommended skills for stack
+    R->>R: Generate CLAUDE.md, AGENTS.md, .claude/project.json
+    R->>R: Install skills from marketplace
     R->>R: Create memory directory
     R->>U: "Project initialized! Continuing with your task..."
     R->>R: Execute BUILD workflow normally
@@ -419,13 +404,23 @@ sequenceDiagram
 
 Or run `/dev-workflow-init` manually for guided setup.
 
-### Alternative: Manual Setup
+### What Gets Created
 
-If you prefer manual control:
-1. Copy `templates/project.json` to `.claude/project.json`
-2. Add `project-patterns/SKILL.md` with your conventions
-3. Copy skills from `registry/skills/` as needed
-4. Run `/dev-workflow-doctor` to verify
+| File | Purpose |
+|------|---------|
+| `CLAUDE.md` | Points to AGENTS.md |
+| `AGENTS.md` | Full instructions for all AI agents |
+| `.claude/project.json` | Project config (source of truth) |
+| `.claude/skills/project-patterns/SKILL.md` | Your project conventions |
+| `.claude/memory/` | Session memory (auto-managed) |
+
+### Alternative: Git Clone
+
+```bash
+git clone https://github.com/vlady98ish/claude-dev-workflow.git
+```
+
+Then in your project, manually symlink skills and agents from the cloned repo into `.claude/`.
 
 ## Skill Registry + skills.sh Marketplace
 
