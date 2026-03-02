@@ -1,7 +1,7 @@
 {
-  "name": "dev-workflow",
+  "name": "shut-up-and-ship",
   "version": "2.0.1",
-  "description": "Generic agent orchestration plugin for Claude Code — 7 agents, 11 skills, config-driven workflows, memory system, and parallel sprint execution",
+  "description": "Shut up and ship. Agent orchestration plugin for Claude Code — 7 agents, 11 skills, config-driven workflows, memory that survives sessions, and parallel sprint execution.",
   "author": {
     "name": "Vladyslav Ishchenko",
     "email": "vlady98ish@gmail.com"

@@ -1,18 +1,18 @@
 {
-  "name": "dev-workflow",
+  "name": "shut-up-and-ship",
   "owner": {
     "name": "Vladyslav Ishchenko",
     "email": "vlady98ish@gmail.com"
   },
   "metadata": {
-    "description": "Generic agent orchestration plugin for Claude Code. 7 specialized agents, 11 skills, config-driven workflows, memory system, and parallel sprint execution.",
+    "description": "Shut up and ship. Agent orchestration plugin for Claude Code — 7 agents, 11 skills, config-driven workflows, memory that survives sessions, and parallel sprint execution.",
     "version": "2.0.1"
   },
   "plugins": [
     {
-      "name": "dev-workflow",
+      "name": "shut-up-and-ship",
       "source": "./",
-      "description": "Full dev-workflow plugin: 7 agents (builder, tester, reviewer, planner, designer, debugger, migrator), 11 skills (router, init, scan, sprint, plan, design, hotfix, status, doctor, pr, memory), config-driven quality gates, feedback loops, memory system, and run observability.",
+      "description": "Shut up and ship. 7 agents (builder, tester, reviewer, planner, designer, debugger, migrator), 11 skills (router, init, scan, sprint, plan, design, hotfix, status, doctor, pr, memory), config-driven quality gates, feedback loops, memory system, and run observability.",
       "version": "2.0.1",
       "author": {
         "name": "Vladyslav Ishchenko"

@@ -1,8 +1,9 @@
 <p align="center">
-  <h1 align="center">dev-workflow</h1>
+  <h1 align="center">shut-up-and-ship</h1>
   <p align="center">
+    Stop configuring. Start shipping.<br/>
     Agent orchestration plugin for <a href="https://docs.anthropic.com/en/docs/claude-code">Claude Code</a>
-    <br />
+    <br /><br />
     <em>7 agents &middot; 11 skills &middot; config-driven &middot; memory across sessions</em>
   </p>
   <p align="center">
@@ -15,9 +16,9 @@
 
 ---
 
-**dev-workflow** turns Claude Code into a structured development pipeline. Instead of one-shot prompts, every task flows through specialized agents — a debugger that diagnoses before fixing, a tester that verifies before reviewing, a reviewer that gates before merging.
+You describe what to build. Seven agents figure out the rest — a debugger that diagnoses before fixing, a tester that verifies before reviewing, a reviewer that gates before merging. Memory survives between sessions so you never re-explain context.
 
-One config file. Any project. Full quality pipeline.
+One config file. Any project. Shut up and ship.
 
 ## Quick Start
 
@@ -25,7 +26,7 @@ One config file. Any project. Full quality pipeline.
 
 ```
 /plugin marketplace add vlady98ish/claude-dev-workflow
-/plugin install dev-workflow@dev-workflow
+/plugin install shut-up-and-ship@shut-up-and-ship
 ```
 
 ### Use
@@ -218,7 +219,7 @@ Browse: [skills.sh](https://skills.sh/) · [claudemarketplaces.com](https://clau
 ## Project Structure
 
 ```
-claude-dev-workflow/
+shut-up-and-ship/
 ├── agents/                        # 7 specialized agents
 │   ├── builder.md                 #   Implementation + TDD
 │   ├── debugger.md                #   Root cause analysis
