@@ -1,16 +1,16 @@
 ---
-name: dev-workflow-init
+name: ship-init
 user-invocable: true
 description: |
-  Bootstrap a new project for dev-workflow. Auto-detects tech stack, recommends skills
+  Bootstrap a new project for ship. Auto-detects tech stack, recommends skills
   from skills.sh marketplace, generates project.json, and installs everything.
 
   Also triggered AUTOMATICALLY by the router when .claude/project.json is missing.
 
-  Usage: /dev-workflow-init
+  Usage: /ship-init
   Or: just start working — router will trigger this on first run.
 
-  Search for more skills: /dev-workflow-init search <query>
+  Search for more skills: /ship-init search <query>
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, AskUserQuestion, WebFetch
 ---
 
@@ -38,7 +38,7 @@ Read(file_path="{PLUGIN_DIR}/registry/catalog.json")
 
 `{PLUGIN_DIR}` = the directory where this plugin is installed. Find it by locating this skill file's parent:
 ```
-Bash(command="dirname $(dirname $(dirname $(readlink -f .claude/skills/dev-workflow-init/SKILL.md 2>/dev/null || echo .claude/skills/dev-workflow-init/SKILL.md)))")
+Bash(command="dirname $(dirname $(dirname $(readlink -f .claude/skills/ship-init/SKILL.md 2>/dev/null || echo .claude/skills/ship-init/SKILL.md)))")
 ```
 
 If catalog not found → use hardcoded defaults (react-native, nextjs, python, go).
@@ -363,11 +363,11 @@ Write(file_path="CLAUDE.md", content=rendered_claude_md)
 ### Next Steps
 1. Edit `.claude/skills/project-patterns/SKILL.md` with your project conventions
 2. Add constraints to `.claude/project.json` (e.g. "Components < 300 lines")
-3. Run `/dev-workflow-doctor` to verify setup
+3. Run `/ship-doctor` to verify setup
 4. Start working! The router will handle everything.
 
 ### Find More Skills
-- Search: `/dev-workflow-init search <query>`
+- Search: `/ship-init search <query>`
 - Browse: https://skills.sh/ | https://claudemarketplaces.com/
 - CLI: `npx skills find <query>`
 ```
@@ -380,14 +380,14 @@ AskUserQuestion:
     - "Yes, scan now (Recommended)"
     - "Skip, I'll add manually"
 
-If yes → invoke /dev-workflow-scan
+If yes → invoke /ship-scan
 ```
 
 ---
 
 ## Skill Search (Available Anytime)
 
-When user runs `/dev-workflow-init search <query>` or asks to find skills:
+When user runs `/ship-init search <query>` or asks to find skills:
 
 ### Search via CLI
 ```
@@ -426,13 +426,13 @@ Read(file_path=".claude/project.json")  # verify
 
 ### Skill Search Examples
 ```
-/dev-workflow-init search react-native    → Finds RN skills
-/dev-workflow-init search supabase        → Finds Supabase skills
-/dev-workflow-init search testing          → Finds testing skills
-/dev-workflow-init search tailwind         → Finds CSS/Tailwind skills
-/dev-workflow-init search expo             → Finds Expo-specific skills
-/dev-workflow-init search python           → Finds Python skills
-/dev-workflow-init search auth             → Finds authentication skills
+/ship-init search react-native    → Finds RN skills
+/ship-init search supabase        → Finds Supabase skills
+/ship-init search testing          → Finds testing skills
+/ship-init search tailwind         → Finds CSS/Tailwind skills
+/ship-init search expo             → Finds Expo-specific skills
+/ship-init search python           → Finds Python skills
+/ship-init search auth             → Finds authentication skills
 ```
 
 ---

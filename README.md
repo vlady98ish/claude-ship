@@ -25,7 +25,7 @@ One config file. Any project. Shut up and ship.
 ### Install
 
 ```
-/plugin marketplace add vlady98ish/claude-dev-workflow
+/plugin marketplace add vlady98ish/claude-ship
 /plugin install shut-up-and-ship@shut-up-and-ship
 ```
 
@@ -77,16 +77,16 @@ On first run, the plugin bootstraps your project: detects tech stack, installs r
 
 | Command | When |
 |---------|------|
-| `/dev-workflow-router` | Any dev task (auto-triggered) |
-| `/dev-workflow-init` | Bootstrap project or search for skills |
-| `/dev-workflow-plan` | Plan + Codex validation before building |
-| `/dev-workflow-design` | Iterate on UI before building |
-| `/dev-workflow-hotfix` | Production incident fast-path |
-| `/dev-workflow-sprint` | Parallel build with agent teams + worktrees |
-| `/dev-workflow-scan` | Auto-generate patterns from your codebase |
-| `/dev-workflow-status` | View progress, recent decisions, run history |
-| `/dev-workflow-doctor` | Health check: config, memory, MCP, features |
-| `/dev-workflow-pr` | Generate PR from workflow artifacts |
+| `/ship-router` | Any dev task (auto-triggered) |
+| `/ship-init` | Bootstrap project or search for skills |
+| `/ship-plan` | Plan + Codex validation before building |
+| `/ship-design` | Iterate on UI before building |
+| `/ship-hotfix` | Production incident fast-path |
+| `/ship-sprint` | Parallel build with agent teams + worktrees |
+| `/ship-scan` | Auto-generate patterns from your codebase |
+| `/ship-status` | View progress, recent decisions, run history |
+| `/ship-doctor` | Health check: config, memory, MCP, features |
+| `/ship-pr` | Generate PR from workflow artifacts |
 
 ## How It Works
 
@@ -126,11 +126,11 @@ Every request goes through the router, which reads your config, detects intent, 
 | **BUILD (UI)** | Designer → Builder → Tester → Reviewer | UI-related files detected |
 | **DEBUG** | Debugger → Builder → Tester → Reviewer | "fix", "bug", "error", "broken" |
 | **PLAN** | Planner → Codex Validate | "plan", "design", "architect" |
-| **HOTFIX** | Debugger → Builder → Tester (targeted) | `/dev-workflow-hotfix` |
+| **HOTFIX** | Debugger → Builder → Tester (targeted) | `/ship-hotfix` |
 | **MIGRATE** | Migrator → [Builder] → Tester → Reviewer | "migrate", "schema", "migration" |
 | **REVIEW** | Reviewer | "review", "audit", "check" |
-| **SPRINT** | Planner → parallel Builders (worktrees) → Merge → Test → Review | `/dev-workflow-sprint` |
-| **DESIGN** | Designer ↔ User (iterate) | `/dev-workflow-design` |
+| **SPRINT** | Planner → parallel Builders (worktrees) → Merge → Test → Review | `/ship-sprint` |
+| **DESIGN** | Designer ↔ User (iterate) | `/ship-design` |
 
 `[agent]` = skippable via config.
 
@@ -210,7 +210,7 @@ Skills are auto-recommended based on your detected tech stack, installed from [s
 Search for more:
 
 ```bash
-/dev-workflow-init search <query>    # inside Claude Code
+/ship-init search <query>    # inside Claude Code
 npx skills find <query>              # from terminal
 ```
 
@@ -229,17 +229,17 @@ shut-up-and-ship/
 │   ├── reviewer.md                #   Security & patterns
 │   └── tester.md                  #   Test execution
 ├── skills/                        # 11 workflow skills
-│   ├── dev-workflow-router/       #   Entry point & orchestration
-│   ├── dev-workflow-init/         #   Project bootstrap
-│   ├── dev-workflow-memory/       #   Session memory management
-│   ├── dev-workflow-plan/         #   Planning + Codex validation
-│   ├── dev-workflow-sprint/       #   Parallel builds
-│   ├── dev-workflow-design/       #   UI design iteration
-│   ├── dev-workflow-hotfix/       #   Production fast-path
-│   ├── dev-workflow-scan/         #   Auto-detect patterns
-│   ├── dev-workflow-status/       #   Progress dashboard
-│   ├── dev-workflow-doctor/       #   Health diagnostics
-│   └── dev-workflow-pr/           #   PR automation
+│   ├── ship-router/       #   Entry point & orchestration
+│   ├── ship-init/         #   Project bootstrap
+│   ├── ship-memory/       #   Session memory management
+│   ├── ship-plan/         #   Planning + Codex validation
+│   ├── ship-sprint/       #   Parallel builds
+│   ├── ship-design/       #   UI design iteration
+│   ├── ship-hotfix/       #   Production fast-path
+│   ├── ship-scan/         #   Auto-detect patterns
+│   ├── ship-status/       #   Progress dashboard
+│   ├── ship-doctor/       #   Health diagnostics
+│   └── ship-pr/           #   PR automation
 ├── registry/                      # Skill catalog + bundled skills
 │   ├── catalog.json               #   Stack → skill mapping
 │   └── skills/                    #   Offline fallbacks

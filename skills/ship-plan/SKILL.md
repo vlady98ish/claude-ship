@@ -1,11 +1,11 @@
 ---
-name: dev-workflow-plan
+name: ship-plan
 user-invocable: true
 description: |
   Create a detailed implementation plan and validate it with Codex.
   Use when you want to plan before building.
 
-  Triggers: /dev-workflow-plan <description of what to plan>
+  Triggers: /ship-plan <description of what to plan>
 allowed-tools: Read, Write, Edit, Bash, Agent, TaskCreate, TaskUpdate, TaskList, TaskGet, AskUserQuestion
 ---
 
@@ -175,5 +175,5 @@ Output summary:
 ## Notes
 
 - This skill works **standalone** — no builder/tester/reviewer chain after.
-- The Router's PLAN workflow triggers automatically on keywords. This skill is for explicit `/dev-workflow-plan` invocation.
+- The Router's PLAN workflow triggers automatically on keywords. This skill is for explicit `/ship-plan` invocation.
 - Plan files are saved to `docs/plans/` by convention.

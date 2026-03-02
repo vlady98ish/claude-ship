@@ -1,11 +1,11 @@
 ---
-name: dev-workflow-hotfix
+name: ship-hotfix
 user-invocable: true
 description: |
   Fast-path for production incidents. Shortened chain with mandatory rollback plan.
   Use when: production bug, urgent fix, incident response.
 
-  Triggers: /dev-workflow-hotfix <description of the issue>
+  Triggers: /ship-hotfix <description of the issue>
 allowed-tools: Read, Write, Edit, Bash, Agent, Grep, Glob, TaskCreate, TaskUpdate, TaskList, TaskGet, AskUserQuestion
 ---
 

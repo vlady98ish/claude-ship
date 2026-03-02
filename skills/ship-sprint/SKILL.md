@@ -1,11 +1,11 @@
 ---
-name: dev-workflow-sprint
+name: ship-sprint
 user-invocable: true
 description: |
   Execute a full sprint: plan features → spawn parallel builder teams → merge → test → review.
   Uses Claude Code's native TeamCreate for parallel execution with worktree isolation.
 
-  Usage: /dev-workflow-sprint <description of features to build>
+  Usage: /ship-sprint <description of features to build>
 
   Triggers: sprint, parallel build, batch features, "build these features in parallel"
 allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Agent, AskUserQuestion, TaskCreate, TaskUpdate, TaskList, TaskGet, TeamCreate, TeamDelete, SendMessage
@@ -19,7 +19,7 @@ allowed-tools: Read, Write, Edit, Bash, Glob, Grep, Agent, AskUserQuestion, Task
 
 ## Prerequisites
 
-- `.claude/project.json` must exist (run `/dev-workflow-init` first)
+- `.claude/project.json` must exist (run `/ship-init` first)
 - Git repo with clean working tree (uncommitted changes will block worktree creation)
 
 ## Step 1: Load Config + Context

@@ -1,11 +1,11 @@
 ---
-name: dev-workflow-status
+name: ship-status
 user-invocable: true
 description: |
   Show workflow status, task progress, and run history.
   Use for: checking progress, resuming work, understanding current state.
 
-  Triggers: /dev-workflow-status
+  Triggers: /ship-status
 allowed-tools: Read, Bash, Glob, Grep, TaskList, TaskGet
 ---
 

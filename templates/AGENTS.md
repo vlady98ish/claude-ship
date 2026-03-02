@@ -4,24 +4,24 @@
 
 ## Entry Point
 
-**For ANY development task → invoke `dev-workflow-router` skill FIRST. Never bypass.**
+**For ANY development task → invoke `ship-router` skill FIRST. Never bypass.**
 
-If `.claude/project.json` is missing → router triggers `/dev-workflow-init` automatically.
+If `.claude/project.json` is missing → router triggers `/ship-init` automatically.
 
 ## Available Commands
 
 | Command | When |
 |---------|------|
-| `/dev-workflow-router` | Any dev task (auto-triggered) |
-| `/dev-workflow-init` | Bootstrap project / search skills |
-| `/dev-workflow-scan` | Auto-generate patterns from codebase |
-| `/dev-workflow-sprint` | Parallel build with agent teams |
-| `/dev-workflow-plan` | Plan + Codex validation |
-| `/dev-workflow-design` | UI design iteration |
-| `/dev-workflow-hotfix` | Production fast-path |
-| `/dev-workflow-status` | View progress + runs |
-| `/dev-workflow-doctor` | Health check |
-| `/dev-workflow-pr` | Generate PR |
+| `/ship-router` | Any dev task (auto-triggered) |
+| `/ship-init` | Bootstrap project / search skills |
+| `/ship-scan` | Auto-generate patterns from codebase |
+| `/ship-sprint` | Parallel build with agent teams |
+| `/ship-plan` | Plan + Codex validation |
+| `/ship-design` | UI design iteration |
+| `/ship-hotfix` | Production fast-path |
+| `/ship-status` | View progress + runs |
+| `/ship-doctor` | Health check |
+| `/ship-pr` | Generate PR |
 
 ## Tech Stack
 

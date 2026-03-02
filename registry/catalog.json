@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "description": "Skill catalog for dev-workflow. Maps tech stacks to recommended skills from skills.sh marketplace + bundled fallbacks.",
+  "description": "Skill catalog for ship. Maps tech stacks to recommended skills from skills.sh marketplace + bundled fallbacks.",
 
   "install_methods": {
     "primary": "npx skills add <package>",

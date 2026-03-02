@@ -1,12 +1,12 @@
 ---
-name: dev-workflow-design
+name: ship-design
 user-invocable: true
 description: |
   Generate and iterate on UI designs before building.
   Uses Cursor Agent, Gemini MCP, or Claude with UI skills for code generation + project constraints for validation.
   Standalone — does NOT trigger builder/tester/reviewer.
 
-  Triggers: /dev-workflow-design <description of what to design>
+  Triggers: /ship-design <description of what to design>
 allowed-tools: Read, Write, Edit, Bash, Agent, Grep, Glob, TaskCreate, TaskUpdate, TaskList, TaskGet, AskUserQuestion
 ---
 
@@ -194,7 +194,7 @@ Output notes which backend was used. Continue with validation and iteration as n
 
 | Scenario | What to Use |
 |----------|-------------|
-| "Design me a settings page, let me review first" | `/dev-workflow-design` |
+| "Design me a settings page, let me review first" | `/ship-design` |
 | "Build the settings page" (full chain) | Router → BUILD (auto-triggers designer if UI) |
 | "I approved the design, now build it" | Router → BUILD (reads design spec from memory) |
 

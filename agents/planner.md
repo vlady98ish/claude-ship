@@ -6,7 +6,7 @@ model: opus
 color: cyan
 tools: Read, Grep, Glob, WebFetch, WebSearch, TaskCreate, TaskList, TaskGet, TaskUpdate, AskUserQuestion, Edit, Write
 permissionMode: bypassPermissions
-skills: dev-workflow:memory
+skills: ship:memory
 ---
 
 # Planner Agent

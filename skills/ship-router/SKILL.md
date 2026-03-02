@@ -1,5 +1,5 @@
 ---
-name: dev-workflow-router
+name: ship-router
 user-invocable: true
 description: |
   THE ENTRY POINT FOR ALL DEVELOPMENT TASKS. This skill MUST be activated for ANY development task.
@@ -46,8 +46,8 @@ If .claude/project.json does NOT exist:
   5. Install recommended skills from registry
   6. Continue with normal workflow
 
-  This is equivalent to running /dev-workflow-init automatically.
-  See dev-workflow-init skill for full bootstrap logic.
+  This is equivalent to running /ship-init automatically.
+  See ship-init skill for full bootstrap logic.
 ```
 
 **Validate required fields:**
@@ -115,10 +115,10 @@ Read(file_path=".claude/memory/patterns.md")
 Read(file_path=".claude/memory/progress.md")
 ```
 
-If any file missing → create from `dev-workflow:memory` templates, then read.
+If any file missing → create from `ship:memory` templates, then read.
 
 **Memory size check:**
-If any file > 50KB → emit warning "Consider running /dev-workflow-doctor for memory compaction"
+If any file > 50KB → emit warning "Consider running /ship-doctor for memory compaction"
 
 ## Step 3: Load Skills
 

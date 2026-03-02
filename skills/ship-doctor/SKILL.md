@@ -1,11 +1,11 @@
 ---
-name: dev-workflow-doctor
+name: ship-doctor
 user-invocable: true
 description: |
   Diagnose plugin health: config validation, MCP connections, memory integrity, agent availability.
   Use when: something isn't working, first-time setup, after updates.
 
-  Triggers: /dev-workflow-doctor
+  Triggers: /ship-doctor
 allowed-tools: Read, Bash, Glob, Grep
 ---
 
@@ -122,7 +122,7 @@ If `features.kanban.enabled`:
 - [ ] File `## Last Updated` timestamp is < 24h old (warn if stale)
 
 **Fix suggestions:**
-- Missing DECISIONS.md → "Run /dev-workflow-init or create from template"
+- Missing DECISIONS.md → "Run /ship-init or create from template"
 - Missing `## Log` anchor → "Add `## Log` section to DECISIONS.md"
 - Stale kanban → "Next workflow run will refresh it"
 

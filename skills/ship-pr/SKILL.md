@@ -1,11 +1,11 @@
 ---
-name: dev-workflow-pr
+name: ship-pr
 user-invocable: true
 description: |
   Generate a pull request from workflow artifacts. Auto-builds PR title, body, and changelog from agent outputs.
   Use after a BUILD/DEBUG/HOTFIX workflow completes.
 
-  Triggers: /dev-workflow-pr [optional: target branch]
+  Triggers: /ship-pr [optional: target branch]
 allowed-tools: Read, Bash, Grep, Glob, TaskList, TaskGet
 ---
 

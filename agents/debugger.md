@@ -7,7 +7,7 @@ color: red
 tools: Read, Grep, Glob, Bash, TaskGet, TaskList, TaskUpdate
 disallowedTools: Edit, Write
 permissionMode: bypassPermissions
-skills: dev-workflow:memory
+skills: ship:memory
 ---
 
 # Debugger Agent

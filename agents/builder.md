@@ -6,7 +6,7 @@ model: sonnet
 color: green
 tools: Read, Grep, Glob, Edit, Write, Bash, TaskGet, TaskList, TaskUpdate
 permissionMode: bypassPermissions
-skills: dev-workflow:memory
+skills: ship:memory
 ---
 
 # Builder Agent

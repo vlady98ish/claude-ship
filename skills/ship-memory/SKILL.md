@@ -1,5 +1,5 @@
 ---
-name: dev-workflow-memory
+name: ship-memory
 user-invocable: true
 description: "Internal skill for memory management. Provides Read-Edit-Verify pattern, stable anchors, and pre-compaction checkpoint."
 allowed-tools: Read, Write, Edit, Bash
@@ -352,8 +352,8 @@ The file `.claude/memory/runs.jsonl` tracks workflow executions.
 ```
 
 Router appends one JSON line per completed workflow. Used by:
-- `/dev-workflow-status` — show recent runs
-- `/dev-workflow-doctor` — detect repeated failures
+- `/ship-status` — show recent runs
+- `/ship-doctor` — detect repeated failures
 
 ## Red Flags - STOP IMMEDIATELY
 

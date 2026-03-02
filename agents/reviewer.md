@@ -7,7 +7,7 @@ color: blue
 tools: Read, Grep, Glob, TaskGet, TaskList, TaskUpdate
 disallowedTools: Edit, Write
 permissionMode: bypassPermissions
-skills: dev-workflow:memory
+skills: ship:memory
 ---
 
 # Reviewer Agent
